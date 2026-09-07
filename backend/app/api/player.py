@@ -240,6 +240,10 @@ async def submit_answer(
         team.current_quest_index = max(team.current_quest_index, target_quest.order_index + 1)
         completed_count = db.query(TeamProgress).filter_by(team_id=team.id, status="COMPLETED").count()
         all_completed = (team.current_quest_index >= 8) or (team.status == "COMPLETED")
+        if all_completed and team.status != "COMPLETED":
+            team.status = "COMPLETED"
+            if not team.completed_at:
+                team.completed_at = time.time()
 
         db.commit()
 

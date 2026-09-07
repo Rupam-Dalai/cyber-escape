@@ -448,9 +448,9 @@ export const BroforceBossEngine: React.FC<BroforceBossEngineProps> = ({
       const k = state.keys;
       const p = state.player;
 
-      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') k.left = true;
-      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') k.right = true;
-      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.key === ' ') {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A' || e.code === 'KeyA') k.left = true;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D' || e.code === 'KeyD') k.right = true;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.code === 'KeyW' || e.key === ' ' || e.code === 'Space') {
         if (!k.up) {
           // Jump or Double Jump
           if (p.isGrounded) {
@@ -480,27 +480,27 @@ export const BroforceBossEngine: React.FC<BroforceBossEngineProps> = ({
         }
         k.up = true;
       }
-      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') k.down = true;
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S' || e.code === 'KeyS') k.down = true;
       if (
-        e.key === 'j' || e.key === 'J' ||
-        e.key === 'z' || e.key === 'Z' ||
-        e.key === 'k' || e.key === 'K' ||
-        e.key === 'f' || e.key === 'F' ||
-        e.key === 'Enter'
+        e.key === 'j' || e.key === 'J' || e.code === 'KeyJ' ||
+        e.key === 'z' || e.key === 'Z' || e.code === 'KeyZ' ||
+        e.key === 'k' || e.key === 'K' || e.code === 'KeyK' ||
+        e.key === 'f' || e.key === 'F' || e.code === 'KeyF' ||
+        e.key === 'Enter' || e.code === 'Enter'
       ) {
         k.shoot = true;
       }
-      if (e.key === 'q' || e.key === 'Q' || e.key === 'x' || e.key === 'X') {
+      if (e.key === 'q' || e.key === 'Q' || e.code === 'KeyQ' || e.key === 'x' || e.key === 'X' || e.code === 'KeyX') {
         triggerSpecialAbility();
       }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
       const k = gameStateRef.current.keys;
-      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') k.left = false;
-      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') k.right = false;
-      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.key === ' ') k.up = false;
-      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') k.down = false;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A' || e.code === 'KeyA') k.left = false;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D' || e.code === 'KeyD') k.right = false;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.code === 'KeyW' || e.key === ' ' || e.code === 'Space') k.up = false;
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S' || e.code === 'KeyS') k.down = false;
       if (
         e.key === 'j' || e.key === 'J' ||
         e.key === 'z' || e.key === 'Z' ||

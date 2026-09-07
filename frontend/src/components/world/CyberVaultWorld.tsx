@@ -129,7 +129,7 @@ export const CyberVaultWorld: React.FC<CyberVaultWorldProps> = ({
 
       // If task overlay is active: [X] or [Escape] closes it
       if (activeInspectorObject) {
-        if (e.key === 'Escape' || ((e.key === 'x' || e.key === 'X') && !isInputFocused)) {
+        if (e.key === 'Escape' || ((e.key === 'x' || e.key === 'X' || e.code === 'KeyX') && !isInputFocused)) {
           e.preventDefault();
           soundEngine.playClick();
           setActiveInspectorObject(null);
@@ -137,15 +137,23 @@ export const CyberVaultWorld: React.FC<CyberVaultWorldProps> = ({
         return;
       }
 
-      // Exploring state: [E] or [Space] or [Enter] interacts with nearby object or door
-      if (e.key.toLowerCase() === 'e' || e.key === ' ' || e.key === 'Enter') {
+      // Exploring state: [E], [Space], or [Enter] interacts with nearby object or door
+      const isInteractKey =
+        e.key.toLowerCase() === 'e' ||
+        e.code === 'KeyE' ||
+        e.key === ' ' ||
+        e.code === 'Space' ||
+        e.key === 'Enter' ||
+        e.code === 'Enter';
+
+      if (isInteractKey) {
         if (isInputFocused) return;
 
         const controller = controllerRef.current;
         const currentRoom = ROOMS[currentRoomId] || ROOMS.CENTRAL_HUB;
 
-        // Synchronous proximity check
-        const currentNearby = controller.getClosestInteractiveObject(currentRoom.objects, 95);
+        // Proximity check: use existing nearbyObject state or synchronous edge-distance check
+        const currentNearby = nearbyObject || controller.getClosestInteractiveObject(currentRoom.objects, 85);
         if (currentNearby) {
           e.preventDefault();
 
@@ -162,13 +170,20 @@ export const CyberVaultWorld: React.FC<CyberVaultWorldProps> = ({
           return;
         }
 
-        // Synchronous door proximity check
+        // Door proximity check: use existing nearbyDoor or test doors
+        const currentDoor = nearbyDoor;
+        if (currentDoor) {
+          e.preventDefault();
+          handleDoorTraverse(currentDoor);
+          return;
+        }
+
         for (const door of currentRoom.doors) {
           const dist = Math.hypot(
             controller.state.x - (door.x + door.width / 2),
             controller.state.y - (door.y + door.height / 2)
           );
-          if (dist < 80) {
+          if (dist < 95) {
             e.preventDefault();
             handleDoorTraverse(door);
             return;
@@ -179,7 +194,8 @@ export const CyberVaultWorld: React.FC<CyberVaultWorldProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentRoomId, activeInspectorObject, progressState]);
+  }, [currentRoomId, activeInspectorObject, nearbyObject, nearbyDoor, progressState]);
+
 
   // Canvas Click-to-Move
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -277,7 +293,7 @@ export const CyberVaultWorld: React.FC<CyberVaultWorldProps> = ({
       let closestDoor: Doorway | null = null;
       for (const door of room.doors) {
         const dist = Math.hypot(player.x - (door.x + door.width / 2), player.y - (door.y + door.height / 2));
-        if (dist < 80) {
+        if (dist < 90) {
           closestDoor = door;
           const isDoorUnlocked = !door.isLocked || Boolean(door.unlockCondition && door.unlockCondition(progressState));
           if (dist < 34 && isDoorUnlocked) {

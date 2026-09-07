@@ -18,8 +18,8 @@ export class PlayerController {
   public state: PlayerState;
   private keys: { [key: string]: boolean } = {};
   private stepSoundCooldown: number = 0;
-  private handleKeyDownBound = (e: KeyboardEvent) => this.handleKeyDown(e.key);
-  private handleKeyUpBound = (e: KeyboardEvent) => this.handleKeyUp(e.key);
+  private handleKeyDownBound = (e: KeyboardEvent) => this.handleKeyDown(e.key, e.code);
+  private handleKeyUpBound = (e: KeyboardEvent) => this.handleKeyUp(e.key, e.code);
 
   constructor(startX: number = 400, startY: number = 300) {
     this.state = {
@@ -73,16 +73,31 @@ export class PlayerController {
     this.state.targetY = y;
   }
 
-  public handleKeyDown(key: string): void {
-    this.keys[key.toLowerCase()] = true;
+  public handleKeyDown(key: string, code?: string): void {
+    const isInputFocused =
+      typeof document !== 'undefined' &&
+      (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA');
+    if (isInputFocused) return;
+
+    const lowerKey = key.toLowerCase();
+    this.keys[lowerKey] = true;
     this.keys[key] = true;
+    if (code) {
+      this.keys[code.toLowerCase()] = true;
+      this.keys[code] = true;
+    }
     this.state.targetX = null;
     this.state.targetY = null;
   }
 
-  public handleKeyUp(key: string): void {
-    this.keys[key.toLowerCase()] = false;
+  public handleKeyUp(key: string, code?: string): void {
+    const lowerKey = key.toLowerCase();
+    this.keys[lowerKey] = false;
     this.keys[key] = false;
+    if (code) {
+      this.keys[code.toLowerCase()] = false;
+      this.keys[code] = false;
+    }
   }
 
   public clearKeys(): void {
@@ -103,11 +118,11 @@ export class PlayerController {
     const isSprint = this.keys['Shift'] || this.keys['shift'];
     const currentSpeed = (isSprint ? this.state.speed * 1.35 : this.state.speed) * ds;
 
-    // Keyboard Input
-    if (this.keys['w'] || this.keys['arrowup']) dy -= currentSpeed;
-    if (this.keys['s'] || this.keys['arrowdown']) dy += currentSpeed;
-    if (this.keys['a'] || this.keys['arrowleft']) dx -= currentSpeed;
-    if (this.keys['d'] || this.keys['arrowright']) dx += currentSpeed;
+    // Keyboard Input: full WASD and Arrow Keys support
+    if (this.keys['w'] || this.keys['keyw'] || this.keys['arrowup']) dy -= currentSpeed;
+    if (this.keys['s'] || this.keys['keys'] || this.keys['arrowdown']) dy += currentSpeed;
+    if (this.keys['a'] || this.keys['keya'] || this.keys['arrowleft']) dx -= currentSpeed;
+    if (this.keys['d'] || this.keys['keyd'] || this.keys['arrowright']) dx += currentSpeed;
 
     // Mouse / Tap Target Input
     const tx = this.state.targetX;
@@ -241,16 +256,34 @@ export class PlayerController {
     }
   }
 
+  // Calculate distance from player position to the closest edge of an object's bounding box
+  public getDistanceToObject(obj: WorldObject): number {
+    const halfW = (obj.width || 40) / 2;
+    const halfH = (obj.height || 40) / 2;
+    const clampedX = Math.max(obj.x - halfW, Math.min(this.state.x, obj.x + halfW));
+    const clampedY = Math.max(obj.y - halfH, Math.min(this.state.y, obj.y + halfH));
+    return Math.hypot(this.state.x - clampedX, this.state.y - clampedY);
+  }
+
   // Get Nearest Object Within Interaction Distance
   public getNearbyObject(objects: WorldObject[], reachDistance: number = 75): WorldObject | null {
     let nearest: WorldObject | null = null;
     let minDistance = reachDistance;
 
     for (const obj of objects) {
-      const dist = Math.hypot(this.state.x - obj.x, this.state.y - obj.y);
-      if (dist < minDistance) {
-        minDistance = dist;
-        nearest = obj;
+      // Distance to perimeter edge
+      const edgeDist = this.getDistanceToObject(obj);
+      // Distance to object center
+      const centerDist = Math.hypot(this.state.x - obj.x, this.state.y - obj.y);
+
+      // Trigger if within reachDistance of the edge OR within 110px of the center
+      if (edgeDist < minDistance || centerDist < 110) {
+        if (edgeDist < minDistance) {
+          minDistance = edgeDist;
+          nearest = obj;
+        } else if (!nearest) {
+          nearest = obj;
+        }
       }
     }
 

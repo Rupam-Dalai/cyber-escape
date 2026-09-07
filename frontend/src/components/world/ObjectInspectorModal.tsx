@@ -93,7 +93,7 @@ export const ObjectInspectorModal: React.FC<ObjectInspectorModalProps> = ({
         document.activeElement?.tagName === 'INPUT' ||
         document.activeElement?.tagName === 'TEXTAREA';
 
-      if (e.key === 'Escape' || ((e.key === 'x' || e.key === 'X') && !isInputFocused)) {
+      if (e.key === 'Escape' || ((e.key === 'x' || e.key === 'X' || e.code === 'KeyX') && !isInputFocused)) {
         e.preventDefault();
         e.stopPropagation();
         soundEngine.playClick();
@@ -103,7 +103,7 @@ export const ObjectInspectorModal: React.FC<ObjectInspectorModalProps> = ({
 
       // Press [E] or [Enter] to collect scavenger item when inspecting container
       if (
-        (e.key.toLowerCase() === 'e' || e.key === 'Enter') &&
+        (e.key.toLowerCase() === 'e' || e.code === 'KeyE' || e.key === 'Enter' || e.code === 'Enter') &&
         !isInputFocused &&
         object &&
         (object.type === 'SCAVENGER_PICKUP' || object.type === 'VENT_FUSE')
