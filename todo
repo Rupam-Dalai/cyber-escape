@@ -1,0 +1,1765 @@
+# PROJECT MASTER PROMPT — CODE HUNT
+
+## 1. ROLE
+
+Act as a senior full-stack engineer, game UI/UX designer, software architect, and QA engineer.
+
+Build a complete, production-ready web application called:
+
+**CODE HUNT**
+
+Code Hunt is an interactive programming treasure-hunt game for a college Programming Club event.
+
+This must NOT look or behave like a normal coding quiz, examination portal, LMS, or Google Form.
+
+The experience should feel like a lightweight adventure/escape-room game where players:
+
+Explore → Discover Quest → Inspect Code → Solve Puzzle → Obtain Clue → Interact With Environment → Unlock Door → Enter Next Area → Reach Final Treasure.
+
+The programming challenges are the mechanism used to progress through the world.
+
+---
+
+# 2. CORE EXPERIENCE
+
+The player should feel that they are entering a mysterious digital world.
+
+Each level represents a different location.
+
+Suggested progression:
+
+START
+↓
+The Ancient Gate
+↓
+Logic Forest
+↓
+Loop Chamber
+↓
+Broken Laboratory
+↓
+Cipher Vault
+↓
+Final Temple
+↓
+Treasure
+
+Do NOT present levels as:
+
+Question 1
+Question 2
+Question 3
+
+Instead present them as locations, missions and discoveries.
+
+Example:
+
+"QUEST 03 — RESTORE THE LOOP CORE"
+
+rather than:
+
+"Question 3 — Find the output."
+
+---
+
+# 3. TECHNOLOGY
+
+Build this as a responsive web application.
+
+Preferred stack:
+
+Frontend:
+
+* React
+* Vite
+* TypeScript
+* Tailwind CSS
+* Framer Motion
+
+Backend:
+
+* FastAPI + Python
+
+Database:
+
+* SQLite by default for easy deployment during a college event.
+
+Architecture must make it easy to migrate to PostgreSQL later.
+
+Communication:
+
+* REST API for normal operations.
+* WebSockets for live leaderboard/admin updates where useful.
+
+Deployment target:
+
+The application should be capable of running on one organizer laptop and being accessed by multiple teams through the same Wi-Fi/LAN.
+
+Also keep it deployable to a normal cloud/VPS environment later.
+
+---
+
+# 4. IMPORTANT SECURITY ARCHITECTURE
+
+Never store correct challenge answers, secret keys, hidden level data, scoring rules that can be exploited, or unlock logic in frontend JavaScript.
+
+The frontend must never determine whether an answer is correct.
+
+Flow:
+
+PLAYER
+↓
+FRONTEND
+↓
+POST ANSWER TO BACKEND
+↓
+BACKEND VALIDATES ANSWER
+↓
+BACKEND UPDATES PROGRESS/SCORE
+↓
+BACKEND RETURNS RESULT
+↓
+FRONTEND PLAYS SUCCESS/FAILURE ANIMATION
+
+Do not expose future-level content through the frontend before the team has unlocked it.
+
+Do not rely on disabled buttons or hidden HTML for access control.
+
+All progression must be verified server-side.
+
+Use secure team sessions.
+
+Rate-limit repeated answer attempts.
+
+Sanitize all user inputs.
+
+Do not use eval() or execute arbitrary player-supplied code directly on the host system.
+
+For initial challenges, validate expected answers instead of actually executing arbitrary code.
+
+---
+
+# 5. VISUAL IDENTITY
+
+The UI must feel like:
+
+Treasure Hunt
++
+Ancient mysterious ruins
++
+Programming terminal
++
+Modern game interface
+
+Avoid an excessive "AI-generated cyberpunk" appearance.
+
+Avoid:
+
+* excessive neon
+* generic hacker imagery
+* Matrix-style falling code everywhere
+* cluttered dashboards
+* giant glowing cards
+* unnecessary gradients
+* normal quiz/exam UI
+
+Use a sophisticated dark adventure interface.
+
+Suggested palette:
+
+Background:
+#080B10
+
+Surface:
+#111720
+
+Elevated surface:
+#18202B
+
+Primary accent:
+warm amber/gold
+
+Secondary accent:
+muted cyan/teal
+
+Success:
+green
+
+Danger:
+red
+
+Text:
+off-white/light gray
+
+Gold should represent:
+
+* discoveries
+* treasure
+* unlocked areas
+* important quest objects
+
+Cyan should represent:
+
+* terminals
+* programming
+* technical information
+
+---
+
+# 6. TYPOGRAPHY
+
+Use two font personalities.
+
+UI/headings:
+Modern strong sans-serif.
+
+Code/terminal:
+Monospace.
+
+Large cinematic headings should be used sparingly.
+
+Examples:
+
+CODE HUNT
+
+THE ANCIENT GATE
+
+QUEST 04
+REPAIR THE TERMINAL
+
+---
+
+# 7. GLOBAL GAME HUD
+
+During gameplay, maintain a compact HUD.
+
+Desktop example:
+
+CODE HUNT | Team: Byte Raiders | ❤️❤️❤️ | 💡 2 | Score: 4250 | 23:41
+
+Mobile:
+
+CODE HUNT
+❤️❤️❤️    💡2    4250
+QUEST 03
+
+Do not allow the HUD to consume excessive screen space.
+
+Show:
+
+* STUDENT NAME
+* current quest
+* lives
+* hints remaining
+* score
+* elapsed time
+
+---
+
+# 8. LANDING PAGE
+
+Create a cinematic but clean landing page.
+
+Hero:
+
+CODE HUNT
+
+Subtitle:
+
+"Every line hides a clue.
+Every solution opens a path."
+
+Primary CTA:
+
+ENTER THE HUNT
+
+Secondary small action:
+
+HOW TO PLAY
+
+Background should suggest an unexplored digital/ancient environment without overwhelming the content.
+
+Add subtle motion:
+
+* floating particles
+* faint environmental movement
+* light flicker
+* very subtle parallax
+
+Do not create an autoplay-heavy experience.
+
+---
+
+# 9. TEAM ENTRY
+
+After selecting ENTER THE HUNT, show:
+
+ENTER THE EXPEDITION
+
+Fields:
+
+STUDENT NAME
+Team Code / Registration Code
+
+Button:
+
+BEGIN JOURNEY
+
+The backend creates/loads the team session.
+
+Show a short transition:
+
+IDENTITY VERIFIED
+
+Expedition registered.
+
+Preparing the hunt...
+
+Then enter Level 1.
+
+---
+
+# 10. GAME MAP
+
+Create an interactive journey map.
+
+Example concept:
+
+ANCIENT GATE
+│
+LOGIC FOREST
+│
+LOOP CHAMBER
+│
+BROKEN LAB
+│
+CIPHER VAULT
+│
+FINAL TEMPLE
+│
+TREASURE
+
+Unlocked location:
+gold highlight.
+
+Current location:
+animated marker.
+
+Locked locations:
+darkened with lock symbol.
+
+Completed:
+checkmark / completed seal.
+
+Future locations must not reveal challenge content.
+
+The map should feel like a journey rather than a sidebar navigation menu.
+
+---
+
+# 11. LEVEL 1 — THE ANCIENT GATE
+
+Difficulty:
+Very Easy
+
+Concept:
+Variables, arithmetic and output.
+
+Purpose:
+Teach players how Code Hunt works.
+
+Scene:
+
+An enormous sealed gate.
+
+A damaged terminal stands beside it.
+
+Quest title:
+
+QUEST 01
+AWAKEN THE GATE
+
+Narrative:
+
+"The gate has slept for centuries.
+Its terminal still remembers one command."
+
+Terminal displays:
+
+int x = 5;
+int y = 3;
+
+printf("%d", x * y + 2);
+
+Ask:
+
+"The terminal is waiting for its output."
+
+Provide an input field.
+
+Expected answer:
+17
+
+When submitted:
+
+Frontend → backend validation.
+
+Wrong:
+
+TERMINAL REJECTED THE SEQUENCE.
+
+Small screen shake.
+
+Lose points according to scoring rules.
+
+Correct:
+
+TERMINAL ACCEPTED.
+
+SEQUENCE DISCOVERED: 17
+
+Then reveal a physical-looking keypad on the gate.
+
+Player must enter 17 again into the keypad.
+
+Correct keypad entry triggers:
+
+* mechanical unlock sound
+* subtle particles
+* gate opening animation
+* warm light behind gate
+
+Display:
+
+THE PATH HAS OPENED.
+
+Award collectible:
+
+Fragment 1: C
+
+Then:
+
+CONTINUE JOURNEY
+
+---
+
+# 12. LEVEL 2 — LOGIC FOREST
+
+Difficulty:
+Easy
+
+Concept:
+if/else and boolean conditions.
+
+Scene:
+
+Dark branching forest.
+
+Player reaches two paths:
+
+LEFT PATH
+RIGHT PATH
+
+Terminal/stone inscription contains:
+
+energy = 7
+
+if energy > 5:
+path = "RIGHT"
+else:
+path = "LEFT"
+
+Quest:
+
+FOLLOW THE MACHINE'S DECISION.
+
+Players should interact with the actual environment.
+
+Do NOT provide standard multiple-choice radio buttons.
+
+Make LEFT and RIGHT clickable pathways.
+
+Wrong path:
+
+DEAD END
+
+"The forest has rejected your decision."
+
+Return player to junction.
+
+Correct:
+
+The environment moves/reveals the next path.
+
+Award:
+
+Fragment 2: O
+
+---
+
+# 13. LEVEL 3 — LOOP CHAMBER
+
+Difficulty:
+Easy/Medium
+
+Concept:
+Loops and accumulation.
+
+Scene:
+
+A dormant circular machine called:
+
+THE LOOP CORE
+
+Show:
+
+key = 0
+
+for i in range(1, 5):
+key += i
+
+The machine has four inactive energy rings.
+
+As the player studies the loop, provide subtle visual representation of:
+
+1
+2
+3
+4
+
+Question:
+
+"What energy value awakens the core?"
+
+Expected:
+10
+
+Player enters 10 into a machine keypad.
+
+Correct:
+
+Ring 1 activates.
+Ring 2 activates.
+Ring 3 activates.
+Ring 4 activates.
+
+CORE ENERGY: 100%
+
+Display:
+
+LOOP CORE RESTORED.
+
+Award:
+
+Fragment 3: D
+
+---
+
+# 14. LEVEL 4 — THE BROKEN LABORATORY
+
+Difficulty:
+Medium
+
+Concept:
+Debugging.
+
+Scene:
+
+An abandoned programming laboratory.
+
+Lights flicker.
+
+Several monitors are broken.
+
+Central terminal displays:
+
+int secret = 20;
+
+if(secret = 20)
+{
+printf("UNLOCK");
+}
+
+Quest:
+
+REPAIR THE SECURITY TERMINAL.
+
+Give the player a small code editor.
+
+Allow them to modify the problematic line.
+
+Expected logical correction:
+
+if(secret == 20)
+
+Do not execute arbitrary submitted code.
+
+Safely normalize/validate the expected correction server-side.
+
+RUN button.
+
+On correct answer:
+
+COMPILING...
+CHECKING CONDITION...
+SECURITY MODULE RESTORED.
+LABORATORY ACCESS GRANTED.
+
+Lights in the environment turn on sequentially.
+
+Reveal Fragment 4:
+
+E
+
+---
+
+# 15. LEVEL 5 — CIPHER VAULT
+
+Difficulty:
+Medium
+
+Concept:
+Arrays + ASCII.
+
+Scene:
+
+A massive sealed vault.
+
+Nearby terminal:
+
+data = [67, 79, 68, 69]
+
+Inscription:
+
+"Numbers may speak when interpreted correctly."
+
+Allow players to reason that these are ASCII values.
+
+Expected password:
+
+CODE
+
+Vault interface:
+
+ENTER VAULT PASSWORD
+
+---
+
+Correct answer:
+
+Vault locking mechanisms rotate.
+
+Door opens.
+
+Inside there is NO treasure.
+
+Instead show:
+
+THE VAULT IS EMPTY.
+
+Then:
+
+"Someone expected you."
+
+Reveal:
+
+Fragment 5: R
+
+The player's collected fragments are now:
+
+C O D E R
+
+Do NOT immediately tell the player what they mean.
+
+Continue to Final Temple.
+
+---
+
+# 16. LEVEL 6 — FINAL TEMPLE
+
+Difficulty:
+Medium/Hard
+
+Combine previous concepts.
+
+Scene:
+
+Ancient programming temple.
+
+Center contains final terminal.
+
+Example challenge:
+
+numbers = [3, 8, 2, 7]
+
+key = 0
+
+for n in numbers:
+if n % 2 == 0:
+key += n
+
+print(key)
+
+Expected:
+10
+
+After solving it, do not immediately finish the game.
+
+Reveal:
+
+THE FINAL LOCK REQUIRES TWO KEYS.
+
+KEY I:
+The result you just discovered.
+
+KEY II:
+The fragments you carried through the hunt.
+
+Player now realizes:
+
+Fragments:
+C O D E R
+
+Final secondary password:
+CODER
+
+Require:
+
+KEY I: 10
+KEY II: CODER
+
+When both are correct:
+
+FINAL SEAL BROKEN.
+
+Trigger the strongest but still tasteful animation in the application.
+
+---
+
+# 17. OPTIONAL PHYSICAL TREASURE MODE
+
+Implement this as an admin-configurable feature.
+
+Admin can specify a final physical location.
+
+Example:
+
+BUILDING: D BLOCK
+FLOOR: 3
+ROOM: D311
+CLUE: SEARCH BENEATH DESK 10
+
+When enabled, completing Final Temple should reveal the physical clue rather than immediately declaring victory.
+
+Players then find a QR code physically placed by organizers.
+
+QR leads to:
+
+/treasure/{unique-token}
+
+Backend validates token.
+
+Then show victory screen.
+
+This allows the digital game to become an actual treasure hunt.
+
+---
+
+# 18. VICTORY SCREEN
+
+Make this cinematic and screenshot-worthy.
+
+Display:
+
+TREASURE FOUND
+
+CODE HUNT COMPLETED
+
+Team:
+BYTE RAIDERS
+
+Completion Time:
+37:42
+
+Final Score:
+4,850
+
+Hints Used:
+1
+
+Wrong Attempts:
+3
+
+Rank:
+#2
+
+Show collected fragments:
+
+C O D E R
+
+Add:
+
+"THE BEST PROGRAMMERS DON'T JUST READ CODE.
+THEY FOLLOW WHERE IT LEADS."
+
+Buttons:
+
+VIEW JOURNEY
+LEADERBOARD
+
+If desired, allow admin to disable leaderboard visibility until the event ends.
+
+---
+
+# 19. LIVES
+
+Each team begins with:
+
+3 lives.
+
+Represent compactly:
+
+❤️ ❤️ ❤️
+
+Incorrect challenge attempts may remove one life.
+
+However:
+
+DO NOT permanently eliminate teams.
+
+When all lives are lost:
+
+Apply configurable penalty.
+
+Default:
+
+60-second lockout.
+
+Display:
+
+RECOVERY MODE
+
+"Your expedition needs time to recover."
+
+00:60
+
+After timer:
+
+Restore one life and allow continuation.
+
+Admin should be able to configure or disable this mechanic.
+
+---
+
+# 20. HINT SYSTEM
+
+Each team receives:
+
+2 hints by default.
+
+Hints must be controlled by backend.
+
+Example:
+
+HINT AVAILABLE
+
+Using a hint costs 200 points.
+
+[USE HINT]
+
+Confirmation:
+
+USE ONE HINT?
+
+Cost: -200 points
+
+Hints should guide rather than reveal the exact answer.
+
+Example ASCII challenge hint:
+
+"Computers often map numbers to characters using a standard encoding."
+
+Not:
+
+"67 = C."
+
+Admin should be able to configure hint text and hint cost.
+
+---
+
+# 21. SCORING ENGINE
+
+Make scoring configurable.
+
+Default:
+
+Initial score:
+1000
+
+Level completion:
++500
+
+Wrong answer:
+-50
+
+Hint:
+-200
+
+Final completion:
++1000
+
+Optionally add time bonuses.
+
+Never allow client-side score modification.
+
+Backend calculates all scores.
+
+Store score events so organizers can audit why a team has a particular score.
+
+Example:
+
+score_events
+
+TEAM
+EVENT
+POINTS
+TIMESTAMP
+
+Byte Raiders
+LEVEL_COMPLETE
++500
+
+Byte Raiders
+WRONG_ATTEMPT
+-50
+
+Byte Raiders
+HINT_USED
+-200
+
+---
+
+# 22. LIVE LEADERBOARD
+
+Create a polished leaderboard.
+
+CODE HUNT
+LIVE EXPEDITION RANKINGS
+
+RANK | TEAM | LOCATION | SCORE | TIME
+
+1 | Null Pointers | Cipher Vault | 4850 | 31:20
+2 | Byte Raiders | Cipher Vault | 4720 | 32:01
+3 | Ctrl Freaks | Broken Lab | 4510 | 29:43
+
+Do not expose exact current challenge answers or sensitive progression data.
+
+Use WebSocket updates.
+
+Add subtle animations when ranking positions change.
+
+---
+
+# 23. ADMIN DASHBOARD
+
+Create a separate protected admin interface.
+
+Route:
+
+/admin
+
+Admin login required.
+
+Dashboard overview:
+
+CODE HUNT
+MISSION CONTROL
+
+Statistics:
+
+Registered Teams
+Active Teams
+Completed Teams
+Average Progress
+Event Runtime
+
+Live team table:
+
+TEAM
+CURRENT LOCATION
+SCORE
+LIVES
+HINTS
+WRONG ATTEMPTS
+TIME
+STATUS
+
+Click team to open detailed information.
+
+---
+
+# 24. ADMIN TEAM CONTROL
+
+Admin must be able to:
+
+* inspect team progress
+* see completed levels
+* see current level
+* see score history
+* see hint usage
+* see incorrect attempt count
+* manually add/remove points
+* restore lives
+* provide a hint
+* reset a level
+* unlock a level
+* move a team to another level
+* pause a team
+* resume a team
+* disqualify a team if necessary
+
+Every admin modification should be logged.
+
+---
+
+# 25. EVENT CONTROL
+
+Admin controls:
+
+START EVENT
+
+PAUSE EVENT
+
+RESUME EVENT
+
+END EVENT
+
+When paused:
+
+Players see:
+
+THE HUNT HAS BEEN PAUSED BY THE GAME MASTER.
+
+When event has not started:
+
+EXPEDITION PREPARING
+
+Waiting for Game Master...
+
+When event begins, connected clients should update without requiring refresh.
+
+---
+
+# 26. QUEST MANAGEMENT
+
+Do not hardcode the entire event into React components.
+
+Create backend/database models for quests.
+
+Quest fields should include:
+
+id
+order
+slug
+title
+location_name
+description
+story
+challenge_type
+code_language
+code_content
+answer_validation_type
+answer_hash / secure answer configuration
+hint
+hint_cost
+completion_points
+wrong_attempt_penalty
+fragment
+is_active
+
+Support challenge types such as:
+
+OUTPUT
+TEXT
+NUMBER
+PATH_SELECTION
+DEBUG_FIX
+PASSWORD
+MULTI_KEY
+
+This allows future Code Hunt events to use different challenges without rewriting the application.
+
+---
+
+# 27. DATABASE MODELS
+
+Create appropriate models/tables for at least:
+
+Admin
+Team
+TeamSession
+Quest
+TeamProgress
+AnswerAttempt
+HintUsage
+ScoreEvent
+EventConfiguration
+AdminAuditLog
+FinalToken
+
+Team:
+
+id
+name
+registration_code
+score
+lives
+hints_remaining
+current_quest
+status
+started_at
+completed_at
+
+TeamProgress:
+
+team_id
+quest_id
+status
+attempt_count
+started_at
+completed_at
+
+AnswerAttempt:
+
+team_id
+quest_id
+submitted_value
+is_correct
+timestamp
+
+Be careful about storing sensitive answer data.
+
+---
+
+# 28. EVENT CONFIGURATION
+
+Admin settings page should allow:
+
+Event Name
+Club Name
+Event Date
+Starting Score
+Starting Lives
+Hints Per Team
+Hint Cost
+Wrong Attempt Penalty
+Level Completion Points
+Final Bonus
+Life Recovery Time
+Leaderboard Enabled
+Physical Treasure Mode
+Final Physical Clue
+Event Status
+
+Do not require code changes for basic event configuration.
+
+---
+
+# 29. RESPONSIVE DESIGN
+
+The player interface must work properly on:
+
+Mobile phones
+Tablets
+Laptops
+Desktop monitors
+
+Prioritize mobile landscape and portrait usability because teams may participate using phones.
+
+Code blocks should remain readable.
+
+Keypads and path selections must have large touch targets.
+
+Do not create tiny controls.
+
+Admin dashboard should prioritize laptop/desktop.
+
+---
+
+# 30. ANIMATIONS
+
+Use Framer Motion.
+
+Animations should enhance game feedback rather than slow gameplay.
+
+Implement:
+
+Door unlock
+Gate opening
+Map movement
+Terminal typing
+Success pulse
+Incorrect answer shake
+Vault opening
+Fragment collection
+Leaderboard position change
+Final treasure reveal
+
+Keep most animations between approximately 200–800ms.
+
+Allow longer cinematic animation only for major transitions such as the final treasure.
+
+Respect prefers-reduced-motion.
+
+---
+
+# 31. AUDIO
+
+Create optional sound support.
+
+Sounds:
+
+button interaction
+terminal typing
+incorrect attempt
+correct answer
+door unlock
+fragment discovery
+vault opening
+final victory
+
+Audio must be muted by default until browser interaction permits playback.
+
+Provide:
+
+🔊 / 🔇
+
+Do not make audio essential to solving any challenge.
+
+---
+
+# 32. LOADING AND NETWORK FAILURE
+
+Because this may run over college Wi-Fi/LAN, handle unstable connections gracefully.
+
+Never lose a team's completed progress because the browser refreshes.
+
+Progress is server-side.
+
+If network drops:
+
+CONNECTION LOST
+
+"Reconnecting to the expedition server..."
+
+Automatically retry.
+
+When connection returns:
+
+CONNECTION RESTORED
+
+Synchronize current progress from backend.
+
+Prevent accidental duplicate scoring from repeated requests.
+
+Use idempotent completion logic.
+
+---
+
+# 33. REFRESH / CHEATING PROTECTION
+
+Refreshing must not:
+
+reset timer
+restore lives
+restore hints
+remove penalties
+allow repeated completion points
+skip levels
+
+The backend is authoritative.
+
+A team should only access quests it has legitimately unlocked unless an admin overrides progression.
+
+---
+
+# 34. GAME STATE
+
+Support:
+
+WAITING
+ACTIVE
+PAUSED
+COMPLETED
+DISQUALIFIED
+
+Quest states:
+
+LOCKED
+AVAILABLE
+IN_PROGRESS
+COMPLETED
+
+Use clear state machines instead of scattered boolean logic.
+
+---
+
+# 35. DESIGN COMPONENTS
+
+Create reusable components such as:
+
+GameHUD
+QuestHeader
+Terminal
+CodeViewer
+CodeEditor
+AncientDoor
+NumericKeypad
+PathSelector
+FragmentCard
+FragmentCollection
+QuestMap
+HintButton
+LivesDisplay
+ScoreDisplay
+CountdownPenalty
+GameDialog
+SuccessOverlay
+FailureOverlay
+Leaderboard
+TeamStatusCard
+AdminSidebar
+AdminTeamTable
+EventControlPanel
+
+Do not create one enormous Game.jsx component.
+
+---
+
+# 36. PLAYER ROUTES
+
+Suggested routes:
+
+/
+/join
+/waiting
+/hunt
+/hunt/map
+/hunt/quest/:questId
+/leaderboard
+/victory
+/treasure/:token
+
+Protected player routes should require a valid team session.
+
+---
+
+# 37. ADMIN ROUTES
+
+/admin/login
+/admin
+/admin/teams
+/admin/teams/:id
+/admin/quests
+/admin/settings
+/admin/audit
+
+Protect all admin APIs separately from team APIs.
+
+---
+
+# 38. UX DETAILS
+
+When a player solves something correctly:
+
+Do not instantly change screens.
+
+Use sequence:
+
+ANSWER ACCEPTED
+↓
+environment reacts
+↓
+clue revealed
+↓
+fragment discovered
+↓
+next location unlocked
+↓
+player chooses CONTINUE
+
+This gives each solution emotional payoff.
+
+Wrong answers should provide feedback without publicly humiliating players.
+
+Use:
+
+"SEQUENCE REJECTED"
+
+rather than:
+
+"WRONG!!!"
+
+---
+
+# 39. ACCESSIBILITY
+
+Maintain sufficient contrast.
+
+Do not communicate success/failure using color alone.
+
+Keyboard navigation should work.
+
+Code must be selectable.
+
+Buttons require clear focus states.
+
+Use semantic HTML where appropriate.
+
+Respect reduced-motion settings.
+
+---
+
+# 40. SEED DATA
+
+Create seed data containing all six sample levels described in this specification.
+
+Also create several fake development teams:
+
+Null Pointers
+Byte Raiders
+Ctrl Freaks
+404 Found
+Runtime Rebels
+
+This will allow testing leaderboard/admin UI immediately.
+
+Do not include development credentials in production configuration.
+
+---
+
+# 41. DEVELOPMENT STRUCTURE
+
+Organize project cleanly.
+
+Example:
+
+code-hunt/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── game/
+│   │   ├── admin/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   ├── types/
+│   │   └── utils/
+│   └── ...
+│
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   ├── game/
+│   │   ├── security/
+│   │   └── websocket/
+│   └── ...
+│
+├── scripts/
+├── README.md
+└── .env.example
+
+Adapt structure where technically appropriate.
+
+---
+
+# 42. CODE QUALITY
+
+Requirements:
+
+TypeScript strict mode.
+
+Clear backend typing.
+
+Centralized API client.
+
+Reusable components.
+
+No unnecessary duplicated logic.
+
+No hardcoded API URLs.
+
+Environment configuration.
+
+Error boundaries.
+
+Structured logging.
+
+Backend validation.
+
+Database migrations.
+
+Proper exception handling.
+
+Secure password hashing for admins.
+
+Secure session/token handling.
+
+Comments should explain non-obvious logic, not obvious syntax.
+
+---
+
+# 43. TESTING
+
+Implement tests for critical game rules.
+
+At minimum test:
+
+Correct answer validation.
+Incorrect answer penalty.
+Hint deduction.
+Hint cannot be reused incorrectly.
+Quest unlocking.
+Locked quest rejection.
+Duplicate level completion cannot duplicate score.
+Lives recovery.
+Admin overrides.
+Final completion.
+Physical token validation.
+Score calculation.
+Session authorization.
+
+Also test responsive layouts for critical player screens.
+
+---
+
+# 44. README
+
+Write a complete README explaining:
+
+What Code Hunt is.
+Architecture.
+Technology stack.
+Installation.
+Development commands.
+Database setup.
+Creating admin account.
+Adding/editing quests.
+Starting an event.
+Connecting devices over LAN.
+Production deployment.
+Environment variables.
+Backup procedure.
+Troubleshooting.
+
+Include exact commands.
+
+---
+
+# 45. LAN MODE
+
+This feature is important.
+
+The organizer should be able to start the backend and frontend on one laptop.
+
+Example concept:
+
+Organizer laptop:
+192.168.x.x
+
+Participants connect through browser:
+
+[http://192.168.x.x:PORT](http://192.168.x.x:PORT)
+
+Configure the server to bind appropriately for LAN access.
+
+Do not hardcode localhost into client requests in a way that prevents other devices from connecting.
+
+Document firewall considerations.
+
+Display a convenient "Participant URL" in the admin dashboard when possible.
+
+Optionally provide a QR code representing the participant URL.
+
+---
+
+# 46. GAME MASTER EXPERIENCE
+
+The organizer must be able to understand the entire event state at a glance.
+
+Mission Control should prioritize:
+
+EVENT STATUS
+
+ACTIVE TEAMS
+
+TEAMS STUCK > X MINUTES
+
+CURRENT LEADER
+
+COMPLETED TEAMS
+
+SYSTEM CONNECTION STATUS
+
+If a team remains on one quest unusually long, visually flag it:
+
+POSSIBLY STUCK
+
+This helps organizers decide whether to provide assistance.
+
+---
+
+# 47. DO NOT BUILD THESE PATTERNS
+
+Do not create:
+
+Generic Bootstrap admin-looking player interface.
+
+Normal quiz cards.
+
+Question 1/10 progress bars.
+
+Radio-button MCQs for every level.
+
+Large amounts of explanatory text.
+
+Excessive neon.
+
+Matrix rain.
+
+Fake hacker terminal clichés everywhere.
+
+Unnecessary 3D assets.
+
+Heavy WebGL that performs poorly on phones.
+
+Client-side answer checking.
+
+Client-side authoritative scoring.
+
+Arbitrary code execution without isolation.
+
+Hardcoded progression scattered across frontend components.
+
+---
+
+# 48. DESIGN PHILOSOPHY
+
+Every screen should answer:
+
+"What is the player trying to discover?"
+
+rather than:
+
+"What question are they answering?"
+
+Programming is the puzzle mechanism.
+
+Exploration is the experience.
+
+Progression is the reward.
+
+The application should make a beginner feel curious rather than intimidated.
+
+---
+
+# 49. IMPLEMENTATION ORDER
+
+Do not attempt everything simultaneously.
+
+Implement in this order:
+
+PHASE 1
+Project architecture
+Database
+Authentication/session system
+Quest model
+Progression engine
+
+PHASE 2
+Player shell
+HUD
+Game map
+Quest rendering engine
+
+PHASE 3
+Six quests
+Answer validation
+Scoring
+Lives
+Hints
+Fragments
+
+PHASE 4
+Admin Mission Control
+Team management
+Event controls
+Quest management
+
+PHASE 5
+Leaderboard
+WebSockets
+Realtime event state
+
+PHASE 6
+Animations
+Audio
+Environmental polish
+
+PHASE 7
+Physical treasure mode
+QR/token verification
+
+PHASE 8
+Security review
+Tests
+Responsive QA
+LAN testing
+README
+Production configuration
+
+After each phase:
+
+Run the application.
+Fix compilation errors.
+Fix runtime errors.
+Test the implemented workflow.
+Only then proceed to the next phase.
+
+---
+
+# 50. FIRST TASK
+
+Begin by:
+
+1. Analyze this specification.
+2. Produce the final architecture.
+3. Define database models.
+4. Define API routes.
+5. Define frontend route structure.
+6. Define the game-state/progression state machine.
+7. Create the project directory structure.
+8. Initialize frontend and backend.
+9. Implement Phase 1.
+10. Run and test Phase 1 before moving forward.
+
+Do not reduce this project to a prototype or static mockup.
+
+Build an actual working full-stack Code Hunt platform.
+
+When a design decision is unspecified, choose the simplest robust solution appropriate for a college event running on approximately 10–50 concurrent team devices.
+
+Prioritize, in this order:
+
+1. Reliable game progression
+2. Server-authoritative security
+3. Easy event administration
+4. Mobile usability
+5. Game atmosphere
+6. Visual effects
+
+The final result should feel like a real Programming Club game called CODE HUNT — not an online examination with a dark theme.

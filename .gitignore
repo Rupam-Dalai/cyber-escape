@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+**/node_modules/
+.venv/
+env/
+venv/
+ENV/
+
+# Production Builds
+dist/
+**/dist/
+build/
+**/build/
+
+# Environment Variables
+.env
+.env.local
+*.env
+
+# Databases & Cache
+*.db
+*.sqlite
+*.sqlite3
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# System Files
+.DS_Store
+Thumbs.db
