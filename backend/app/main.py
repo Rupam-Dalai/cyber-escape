@@ -45,9 +45,13 @@ app.include_router(player.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
 app.include_router(leaderboard.router, prefix="/api")
 
-@app.get("/")
-def read_root():
-    # Helper to discover local IP address for LAN setup
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+@app.get("/api/health")
+@app.get("/api/status")
+def read_status():
     host_ip = "127.0.0.1"
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -58,8 +62,26 @@ def read_root():
         pass
 
     return {
-        "title": "CODE HUNT Platform API",
+        "title": "Escape the Cyber Vault Platform API",
         "status": "ONLINE",
         "lan_access_url": f"http://{host_ip}:8000",
         "docs_url": f"http://{host_ip}:8000/docs"
     }
+
+# Serve Frontend Static Files (SPA Single-Project Support)
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+if not os.path.exists(static_dir):
+    static_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
+
+if os.path.exists(static_dir):
+    assets_dir = os.path.join(static_dir, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        target_file = os.path.join(static_dir, full_path)
+        if full_path and os.path.isfile(target_file):
+            return FileResponse(target_file)
+        return FileResponse(os.path.join(static_dir, "index.html"))
+
