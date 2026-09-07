@@ -5,7 +5,11 @@ class Settings:
     SECRET_KEY: str = os.getenv("SECRET_KEY", "codehunt_secret_key_college_event_2026_super_secure")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 # 24 hours
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./code_hunt.db")
+    # Database URL handling with Render/Heroku postgres:// schema fix
+    _raw_db = os.getenv("DATABASE_URL", "sqlite:///./code_hunt.db")
+    if _raw_db.startswith("postgres://"):
+        _raw_db = _raw_db.replace("postgres://", "postgresql://", 1)
+    DATABASE_URL: str = _raw_db
     
     # Game Defaults
     DEFAULT_STARTING_SCORE: int = 1000

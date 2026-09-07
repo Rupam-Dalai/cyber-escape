@@ -9,6 +9,15 @@ export class WebSocketClient {
   private isConnecting: boolean = false;
 
   private getWsUrl(): string {
+    const envApi = (((import.meta as any).env?.VITE_API_BASE_URL as string) || '').trim();
+    if (envApi) {
+      try {
+        const parsed = new URL(envApi);
+        const wsProto = parsed.protocol === 'https:' ? 'wss:' : 'ws:';
+        return `${wsProto}//${parsed.host}/api/leaderboard/ws`;
+      } catch {}
+    }
+
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     
     // In local Vite development (port 5173), direct connect to backend on 8000 as fallback

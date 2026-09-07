@@ -1,6 +1,7 @@
 import { Team, Quest, AnswerResult, LeaderboardEntry, EventConfig, FragmentItem } from '../types';
 
-const API_BASE = '/api';
+const envApiUrl = (((import.meta as any).env?.VITE_API_BASE_URL as string) || '').trim();
+const API_BASE = envApiUrl ? `${envApiUrl.replace(/\/$/, '')}/api` : '/api';
 
 export function getSessionCode(): string | null {
   return localStorage.getItem('code_hunt_team_code');
