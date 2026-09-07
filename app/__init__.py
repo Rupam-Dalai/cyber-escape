@@ -1,8 +1,12 @@
 import os
 import sys
 
-# Ensure backend directory is in sys.path
-backend_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "backend")
-backend_dir = os.path.abspath(backend_dir)
+# Ensure backend directory is in sys.path so app submodules (database, models, routes, etc.) resolve
+backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "backend"))
 if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
+
+# Also extend __path__ so that `from app.database import ...` finds backend/app/database.py
+backend_app_dir = os.path.join(backend_dir, "app")
+if backend_app_dir not in __path__:
+    __path__.append(backend_app_dir)

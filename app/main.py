@@ -1,11 +1,12 @@
 import os
 import sys
+import runpy
 
-# Ensure backend directory is in sys.path
-backend_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "backend")
-backend_dir = os.path.abspath(backend_dir)
+backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "backend"))
 if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
-# Import app from backend/app/main.py
-from app.main import *
+# Execute the actual backend/app/main.py and expose all its symbols including 'app'
+_backend_main = os.path.join(backend_dir, "app", "main.py")
+_globals = runpy.run_path(_backend_main, run_name="app.main")
+globals().update(_globals)
